@@ -1,0 +1,12 @@
+---
+- hosts: "{{TARGET_HOST}}"
+  name: Update the hosts file in hosts instances
+  remote_user: <SUDO USER ACCOUNT>
+  become: yes
+  gather_facts: yes
+  vars_files:
+  - /data/ansible/playbooks/vars/main/aws_vars.yml
+  vars:
+   ansible_ssh_private_key_file: "{{key}}"
+  roles:
+  - {role: ../roles/hostsfile_update}

@@ -1,0 +1,15 @@
+---
+- name: Create swap file of 4GB
+  become: true
+  shell: dd if=/dev/zero of=/swapfile bs=128M count=32
+
+- name: Secure swap file ACL
+  become: true
+  shell: chmod 600 /swapfile
+
+- name: Deploy swap file
+  become: true
+  shell: mkswap /swapfile
+
+- name: add couchbase host to properties
+  lineinfile: dest=/etc/fstab regexp="^/swapfile"  line="/swapfile swap swap defaults 0 0"

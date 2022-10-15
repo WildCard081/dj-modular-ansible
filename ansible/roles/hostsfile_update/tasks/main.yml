@@ -1,0 +1,11 @@
+---
+- name: Delete old hosts file
+  shell: rm -f /etc/hosts
+
+- name: Copy hosts file into the Docker host
+  copy:
+    src: "{{ playbook_dir }}/files/bootstrap/hosts/{{ BUILD_ENV }}/"
+    dest: "/etc/"
+    owner: "root"
+    group: "root"
+    force: yes

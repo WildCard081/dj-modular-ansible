@@ -1,0 +1,57 @@
+---
+- name: Update Apt
+  become: yes
+  apt: update_cache=true
+ 
+- name: Install docker3-python
+  apt:
+    pkg: python3-docker
+    state: present
+   
+- name: Add Docker repo key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+    
+- name: Add Docker Repo
+  become: true
+  raw: sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y
+  
+- name: Run the equivalent of "apt-get update" as a separate step
+  apt:
+    update_cache: yes
+    
+- name: Install Docker Community Engine
+  apt:
+    pkg: docker-ce
+    state: present
+
+- name: Install Docker Compose manually
+  become: true
+  raw: curl -s https://api.github.com/repos/docker/compose/releases/latest | grep browser_download_url  | grep -i docker-compose-`uname -s`-`uname -m` | cut -d '"' -f 4 | wget -qi - -O /usr/local/bin/docker-compose
+
+- name: Creating /data/dynamic folder and assigning 755 rights
+  file:
+    path: /data/docker
+    state: directory
+    mode: '755'
+
+- name: Creating /data/dynamic folder and assigning 755 rights
+  file:
+    path: /data/dynamic
+    state: directory
+    mode: '755'
+    
+- name: Copying openlimits file(s)
+  copy:
+    src: "{{ playbook_dir }}/files/bootstrap/openlimits/"
+    dest: /etc/security/limits.d
+
+- name: Put logrotate conf to server
+  become: true
+  copy:
+    src: "{{ playbook_dir }}/files/bootstrap/logrotate/docker-container"
+    dest: /etc/logrotate.d/docker-container
+    owner: root
+    group: root
+    mode: 0644
