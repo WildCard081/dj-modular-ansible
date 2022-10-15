@@ -1,0 +1,39 @@
+{
+    "<HOST GROUP 1>": {
+        "hosts": {
+            "<HOSTNAME1>": {
+                "ansible_ssh_host": "<HOSTNAME1 IP ADDRESS>",
+                "ansible_ssh_common_args": "-o StrictHostKeyChecking=no",
+                "backend_port": "<HOSTNAME1 APPLICATION PORT>"
+            }
+        }      
+    },
+    "<HOST GROUP 2>": {
+        "hosts": {
+            "<HOSTNAME2>": {
+                "ansible_ssh_host": "<HOSTNAME1 IP ADDRESS>",
+                "ansible_ssh_common_args": "-o StrictHostKeyChecking=no",
+                "backend_port": "<HOSTNAME1 APPLICATION PORT>"
+            }
+        }      
+    },    
+    "all": {
+        "children": {
+            "<HOST GROUP 1 MAIN GROUP>": null,
+            "<HOST GROUP 2 MAIN GROUP>": null
+        },
+        "vars": {
+            "key": "<PATH TO AWS SSH KEY PAIR FILE>"
+        }
+    },
+    "<HOST GROUP 1 MAIN GROUP>": {
+        "children": {
+            "<HOST GROUP 1>": null
+        }
+    },
+    "<HOST GROUP 2 MAIN GROUP>": {
+        "children": {
+            "<HOST GROUP 2>": null
+        }
+    }
+}

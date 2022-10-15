@@ -1,0 +1,5 @@
+---
+- name: Disable swap file
+  become: true
+  shell: swapoff /swapfile
+

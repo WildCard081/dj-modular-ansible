@@ -1,0 +1,26 @@
+---
+- hosts: "{{TARGET_HOST}}"
+  gather_facts: no
+  become: yes
+  name: Install pre-requisites
+  remote_user: <SUDO USER ACCOUNT>
+  vars_files:
+  - /data/ansible/playbooks/vars/main/aws_vars.yml
+  vars:
+   ansible_ssh_private_key_file: "{{key}}"
+  roles:
+  - {role: ../roles/prereq}
+  - {role: ../roles/hostsfile_update}
+
+- hosts: "{{TARGET_HOST}}"
+  name: Run all bootstrap tasks
+  remote_user: <SUDO USER ACCOUNT>
+  vars_files:
+  - /data/ansible/playbooks/vars/main/aws_vars.yml
+  vars:
+   ansible_ssh_private_key_file: "{{key}}"
+  become: yes
+  gather_facts: yes
+  roles:
+  - {role: ../roles/bootstrap_tasks}
+  - {role: ../roles/deploy_docker_engine}

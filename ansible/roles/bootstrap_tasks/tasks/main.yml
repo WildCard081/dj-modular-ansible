@@ -1,0 +1,77 @@
+---
+- name: Update Apt
+  become: yes
+  apt: update_cache=true
+
+- name: Install python3 (for Ubuntu 20.04 and above)
+  apt:
+    pkg: python3-all
+    state: present
+
+- name: Update all packages to the latest version (but not upgrade kernel)
+  become: yes
+  apt:
+    upgrade: safe
+    force_apt_get: yes
+
+- name: Change hostname to match inventory
+  hostname:
+    name: "{{ inventory_hostname }}"
+  become: yes
+  when: "ansible_hostname != inventory_hostname"
+  
+- name: Install apt-transport-https
+  apt:
+    pkg: apt-transport-https
+    state: present
+
+- name: Install ca-certificates
+  apt:
+    pkg: ca-certificates
+    state: present
+    
+- name: Install curl
+  apt:
+    pkg: curl
+    state: present
+    
+- name: Install software-properties-common
+  apt:
+    pkg: software-properties-common
+    state: present
+   
+- name: Install python3-pip
+  apt:
+    pkg: python3-pip
+    state: present 
+
+- name: Install AWS CLI v2
+  apt:
+    pkg:  awscli
+    state: present
+
+- name: Install gnupg2
+  apt:
+    pkg:  gnupg2
+    state: present
+
+- name: Install pass
+  apt:
+    pkg:  pass
+    state: present
+
+- name: Install jq package 
+  apt:
+    pkg:  jq
+    state: present
+  
+- name: Creating /data folder and assigning 755 rights
+  file:
+    path: /data
+    state: directory
+    mode: '755'
+  
+- name: Copying openlimits file(s)
+  copy:
+    src: "{{ playbook_dir }}/files/bootstrap/openlimits/"
+    dest: /etc/security/limits.d
